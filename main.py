@@ -10,10 +10,9 @@ if 'resultados' not in st.session_state:
 def exportar_resultados():
     if st.session_state.resultados:
         df = pd.DataFrame(st.session_state.resultados.items(), columns=['Indicador', 'Valor'])
-        df.to_csv('resultados.csv', index=False)
-        st.success("Resultados exportados com sucesso!")
+        return df.to_csv(index=False)
     else:
-        st.warning("Nenhum resultado para exportar.")
+        return None
 
 # Funções para cálculos
 def calcular_media_aritmetica(valores):
@@ -78,10 +77,6 @@ def adicionar_resultado(nome, valor):
 # Interface do usuário
 st.title("Calculadora de Indicadores")
 st.write("Página voltada para o cálculo de indicadores para múltiplas funcionalidades de análise de dados.")
-
-# Botão para exportar resultados
-if st.button("Exportar Resultados"):
-    exportar_resultados()
 
 # Custo por Lead
 st.header("Custo por Lead")
@@ -196,11 +191,18 @@ st.header("Moda")
 valores_moda = st.text_input("Insira os valores separados por vírgula:", "1,2,2,3,4", key="moda")
 if st.button("Calcular Moda"):
     valores = list(map(float, valores_moda.split(',')))
-    moda = calcular_moda(valores)
-    adicionar_resultado("Moda", moda)
+    modas = calcular_moda(valores)
+    adicionar_resultado("Moda", modas)
+
+# Botão para exportar resultados
+csv_resultados = exportar_resultados()
+if csv_resultados:
+    st.download_button("Baixar Resultados como CSV", csv_resultados, "resultados.csv", "text/csv")
+else:
+    st.warning("Nenhum resultado para exportar.")
 
 # Exibir resultados atuais
-st.subheader("Resultados Calculados")
+st.subheader("Resultados Atuais")
 resultados_keys = list(st.session_state.resultados.keys())  # Cópia das chaves
 for nome in resultados_keys:
     valor = st.session_state.resultados[nome]
