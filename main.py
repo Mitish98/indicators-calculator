@@ -78,20 +78,15 @@ def adicionar_resultado(nome, valor):
 st.title("Calculadora de Indicadores")
 st.write("Página voltada para o cálculo de indicadores para múltiplas funcionalidades de análise de dados.")
 
-# Custo por Lead
-st.header("Custo por Lead")
-custo_marketing = st.number_input("Custo Total de Marketing:", min_value=0.0, format="%.2f")
-leads_gerados = st.number_input("Número de Leads Gerados:", min_value=0.0, format="%.2f")
-
-if st.button("Calcular CPL"):
-    if leads_gerados > 0:
-        cpl = calcular_cpl(custo_marketing, leads_gerados)
-        adicionar_resultado("CPL", cpl)
-    else:
-        st.warning("O número de leads gerados deve ser maior que zero.")
+# Botão para exportar resultados
+csv_resultados = exportar_resultados()
+if csv_resultados:
+    st.download_button("Baixar Resultados como CSV", csv_resultados, "resultados.csv", "text/csv")
+else:
+    st.warning("Nenhum resultado para exportar.")
 
 # Return on Investment
-st.header("Return on Investment")
+st.header("Return on Investment", help="Avalia a eficiência de um investimento, ajudando empresas a entenderem o retorno que estão obtendo em relação ao que foi investido. Facilita a comparação entre diferentes projetos ou campanhas, permitindo priorizar aqueles com maior retorno potencial para justificar despesas em marketing, publicidade ou qualquer outra área para mostrar o valor gerado por esses investimentos.")
 receita_obtida = st.number_input("Receita Obtida:", min_value=0.0, format="%.2f")
 custo_investimento = st.number_input("Custo Total de Investimento:", min_value=0.0, format="%.2f")
 
@@ -102,8 +97,32 @@ if st.button("Calcular ROI"):
     else:
         st.warning("O custo de investimento deve ser maior que zero.")
 
+# Custo por Lead
+st.header("Custo por Lead", help="O CPL ajuda a medir a eficácia das campanhas de marketing, já que campanhas com um CPL baixo geralmente indicam uma boa performance. Ideal para ajudar a alocar orçamentos de forma eficiente, permitindo que as empresas direcionem recursos para as campanhas mais rentáveis ao testar diferentes canais para identificar quais geram leads a um menor custo")
+custo_marketing = st.number_input("Custo Total de Marketing:", min_value=0.0, format="%.2f")
+leads_gerados = st.number_input("Número de Leads Gerados:", min_value=0.0, format="%.2f")
+
+if st.button("Calcular CPL"):
+    if leads_gerados > 0:
+        cpl = calcular_cpl(custo_marketing, leads_gerados)
+        adicionar_resultado("CPL", cpl)
+    else:
+        st.warning("O número de leads gerados deve ser maior que zero.")
+
+# Custo de Aquisição de Clientes
+st.header("Custo de Aquisição de Clientes", help="Representa o custo total envolvido na aquisição de um novo cliente. ")
+custo_marketing_vendas = st.number_input("Custo Total de Marketing e Vendas:", min_value=0.0, format="%.2f")
+novos_clientes = st.number_input("Número de Novos Clientes Adquiridos:", min_value=0.0, format="%.2f")
+
+if st.button("Calcular CAC"):
+    if novos_clientes > 0:
+        cac = calcular_cac(custo_marketing_vendas, novos_clientes)
+        adicionar_resultado("CAC", cac)
+    else:
+        st.warning("O número de novos clientes deve ser maior que zero.")
+
 # Life Time Value
-st.header("Life Time Value")
+st.header("Life Time Value", help="Estima o valor total que um cliente pode gerar para uma empresa durante toda a sua relação com a marca, permitindo que as empresas invistam de forma mais eficaz em campanhas de marketing para saber quanto estão dispostas a gastar para adquirir um cliente. O LTV deve ser comparado ao Custo de Aquisição de Clientes (CAC). Um LTV significativamente maior que o CAC indica uma estratégia de aquisição saudável.")
 receita_media_cliente = st.number_input("Receita Média por Cliente:", min_value=0.0, format="%.2f")
 tempo_retenção = st.number_input("Tempo Médio de Retenção do Cliente:", min_value=0.0, format="%.2f")
 margem_lucro = st.number_input("Margem de Lucro:", min_value=0.0, format="%.2f")
@@ -126,18 +145,6 @@ if st.button("Calcular CTR"):
         adicionar_resultado("CTR", ctr)
     else:
         st.warning("O número de impressões deve ser maior que zero.")
-
-# Custo de Aquisição de Clientes
-st.header("Custo de Aquisição de Clientes")
-custo_marketing_vendas = st.number_input("Custo Total de Marketing e Vendas:", min_value=0.0, format="%.2f")
-novos_clientes = st.number_input("Número de Novos Clientes Adquiridos:", min_value=0.0, format="%.2f")
-
-if st.button("Calcular CAC"):
-    if novos_clientes > 0:
-        cac = calcular_cac(custo_marketing_vendas, novos_clientes)
-        adicionar_resultado("CAC", cac)
-    else:
-        st.warning("O número de novos clientes deve ser maior que zero.")
 
 # Net Promoter Score
 st.header("Net Promoter Score")
@@ -194,15 +201,8 @@ if st.button("Calcular Moda"):
     modas = calcular_moda(valores)
     adicionar_resultado("Moda", modas)
 
-# Botão para exportar resultados
-csv_resultados = exportar_resultados()
-if csv_resultados:
-    st.download_button("Baixar Resultados como CSV", csv_resultados, "resultados.csv", "text/csv")
-else:
-    st.warning("Nenhum resultado para exportar.")
-
 # Exibir resultados atuais
-st.subheader("Resultados Atuais")
+st.subheader("Resultados Calculados")
 resultados_keys = list(st.session_state.resultados.keys())  # Cópia das chaves
 for nome in resultados_keys:
     valor = st.session_state.resultados[nome]
