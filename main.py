@@ -110,7 +110,7 @@ if st.button("Calcular CPL"):
         st.warning("O número de leads gerados deve ser maior que zero.")
 
 # Custo de Aquisição de Clientes
-st.header("Custo de Aquisição de Clientes", help="Representa o custo total envolvido na aquisição de um novo cliente. ")
+st.header("Custo de Aquisição de Clientes", help="Representa o custo total envolvido na aquisição de um novo cliente. Analisar o CAC pode revelar áreas onde os custos de aquisição são excessivos, permitindo ajustes nas táticas de marketing e vendas.  ")
 custo_marketing_vendas = st.number_input("Custo Total de Marketing e Vendas:", min_value=0.0, format="%.2f")
 novos_clientes = st.number_input("Número de Novos Clientes Adquiridos:", min_value=0.0, format="%.2f")
 
@@ -147,7 +147,7 @@ if st.button("Calcular CTR"):
         st.warning("O número de impressões deve ser maior que zero.")
 
 # Net Promoter Score
-st.header("Net Promoter Score")
+st.header("Net Promoter Score", help="Métrica que mede a lealdade dos clientes e a probabilidade de eles recomendarem uma empresa, produto ou serviço a outros. O NPS é obtido a partir de uma única pergunta enviada aos clientes 'Em uma escala de 0 a 10, qual a probabilidade de você recomendar nossa empresa a um amigo ou colega?' Com base nas respostas, os clientes são classificados em três categorias: Promotores (nota 9-10): Clientes fiéis que recomendam a empresa. / Neutros (nota 7-8): Clientes satisfeitos, mas não necessariamente leais. / Detratores (nota 0-6): Clientes insatisfeitos que podem prejudicar a reputação da empresa. Além da pontuação numérica, coletar feedback qualitativo pode oferecer contexto e profundidade às respostas, ajudando a entender as razões por trás das classificações.")
 pontuacao_promotores = st.number_input("Pontuação de Promotores:", min_value=0.0, format="%.2f")
 pontuacao_detratores = st.number_input("Pontuação de Detratores:", min_value=0.0, format="%.2f")
 
@@ -156,7 +156,7 @@ if st.button("Calcular NPS"):
     adicionar_resultado("NPS", nps)
 
 # Churn
-st.header("Churn")
+st.header("Churn", help="Métrica que indica a porcentagem de clientes que interrompem o uso de um serviço ou produto em um determinado período. Ao entender as causas do churn, as empresas podem desenvolver estratégias específicas para melhorar a retenção e minimizar a perda de clientes.")
 clientes_perdidos = st.number_input("Número de Clientes Perdidos:", min_value=0.0, format="%.2f")
 clientes_inicial = st.number_input("Número Total de Clientes no Início do Período:", min_value=0.0, format="%.2f")
 
@@ -168,7 +168,7 @@ if st.button("Calcular Churn"):
         st.warning("O número total de clientes no início do período deve ser maior que zero.")
 
 # Média Aritmética
-st.header("Média Aritmética")
+st.header("Média Aritmética", help="Medida central comum usada para entender a tendência de dados, valores extremos podem distorcer a média, o que exige cuidado ao interpretar.")
 valores_aritmetica = st.text_input("Insira os valores separados por vírgula:", "1,2,3,4,5", key="media_aritmetica")
 if st.button("Calcular Média Aritmética"):
     valores = list(map(float, valores_aritmetica.split(',')))
@@ -176,7 +176,7 @@ if st.button("Calcular Média Aritmética"):
     adicionar_resultado("Média Aritmética", media_aritmetica)
 
 # Média Ponderada
-st.header("Média Ponderada")
+st.header("Média Ponderada", help="A média ponderada leva em consideração a importância de cada valor no conjunto, atribuindo pesos a eles. A média ponderada oferece uma visão mais precisa quando diferentes valores têm diferentes importâncias.")
 valores_ponderada = st.text_input("Insira os valores separados por vírgula:", "1,2,3", key="media_ponderada")
 pesos_ponderada = st.text_input("Insira os pesos separados por vírgula:", "0.1,0.2,0.7", key="pesos_ponderada")
 if st.button("Calcular Média Ponderada"):
@@ -186,7 +186,7 @@ if st.button("Calcular Média Ponderada"):
     adicionar_resultado("Média Ponderada", media_ponderada)
 
 # Mediana
-st.header("Mediana")
+st.header("Mediana", help="A mediana é o valor central de um conjunto de dados ordenados. Se houver um número ímpar de valores, a mediana é o valor central; se houver um número par, é a média dos dois valores centrais. A mediana é menos afetada por valores extremos, oferecendo uma medida mais robusta em distribuições assimétricas, ideal para descrever distribuições enviesadas.")
 valores_mediana = st.text_input("Insira os valores separados por vírgula:", "1,2,3,4,5", key="mediana")
 if st.button("Calcular Mediana"):
     valores = list(map(float, valores_mediana.split(',')))
@@ -194,12 +194,35 @@ if st.button("Calcular Mediana"):
     adicionar_resultado("Mediana", mediana)
 
 # Moda
-st.header("Moda")
+st.header("Moda", help="A moda é o valor que mais aparece em um conjunto de dados. Ao contrário da média e da mediana, a moda não leva em conta o valor exato, mas sim a frequência. Utilizada para entender qual é a escolha mais comum, como o produto mais vendido. Um conjunto de dados pode ter mais de uma moda (bimodal ou multimodal).")
 valores_moda = st.text_input("Insira os valores separados por vírgula:", "1,2,2,3,4", key="moda")
 if st.button("Calcular Moda"):
     valores = list(map(float, valores_moda.split(',')))
     modas = calcular_moda(valores)
     adicionar_resultado("Moda", modas)
+
+st.header("Taxa de Conversão" , help="Mede o percentual de pessoas que realizaram uma ação desejada (como uma compra) em relação ao número total de pessoas que interagiram com uma campanha ou site.")
+conversoes = st.number_input("Número de Conversões:", min_value=0.0, format="%.2f", key="conversoes")
+total_visitas = st.number_input("Número Total de Visitas:", min_value=0.0, format="%.2f", key="total_visitas")
+
+if st.button("Calcular Taxa de Conversão"):
+    if total_visitas > 0:
+        taxa_conversao = calcular_taxa_conversao(conversoes, total_visitas)
+        adicionar_resultado("Taxa de Conversão", taxa_conversao)
+    else:
+        st.warning("O número total de visitas deve ser maior que zero.")
+
+# Taxa de Crescimento
+st.header("Taxa de Crescimento", help="A taxa de crescimento mede o aumento percentual de uma variável (como receita, número de clientes, etc.) em relação a um período anterior.")
+valor_atual = st.number_input("Valor Atual:", min_value=0.0, format="%.2f", key="valor_atual")
+valor_anterior = st.number_input("Valor Anterior:", min_value=0.0, format="%.2f", key="valor_anterior")
+
+if st.button("Calcular Taxa de Crescimento"):
+    if valor_anterior > 0:
+        taxa_crescimento = calcular_taxa_crescimento(valor_atual, valor_anterior)
+        adicionar_resultado("Taxa de Crescimento", taxa_crescimento)
+    else:
+        st.warning("O valor anterior deve ser maior que zero.")
 
 # Exibir resultados atuais
 st.subheader("Resultados Calculados")
