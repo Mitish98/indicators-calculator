@@ -267,7 +267,7 @@ if st.button("Calcular Taxa de Crescimento"):
     else:
         st.warning("O valor anterior deve ser maior que zero.")
 
-# Exibir resultados atuais
+
 st.subheader("Resultados Calculados")
 resultados_keys = list(st.session_state.resultados.keys()) 
 for nome in resultados_keys:
