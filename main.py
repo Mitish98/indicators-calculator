@@ -15,6 +15,13 @@ def exportar_resultados():
         return None
 
 # Funções para cálculos
+
+def calcular_frequencia_compra(total_compras, clientes):
+    return total_compras / clientes
+
+def calcular_payback_period(investimento_inicial, retorno_anual):
+    return investimento_inicial / retorno_anual
+
 def calcular_media_aritmetica(valores):
     return sum(valores) / len(valores)
 
@@ -64,6 +71,9 @@ def calcular_nps(pontuacao_promotores, pontuacao_detratores):
 def calcular_churn(clientes_perdidos, clientes_inicial):
     return (clientes_perdidos / clientes_inicial) * 100
 
+def calcular_ticket_medio(receita_total, numero_clientes):
+    return receita_total / numero_clientes
+
 # Função para adicionar e exibir resultados
 def adicionar_resultado(nome, valor):
     if isinstance(valor, list):
@@ -86,7 +96,7 @@ else:
     st.warning("Nenhum resultado para exportar.")
 
 # Return on Investment
-st.header("Return on Investment", help="Avalia a eficiência de um investimento, ajudando empresas a entenderem o retorno que estão obtendo em relação ao que foi investido. Facilita a comparação entre diferentes projetos ou campanhas, permitindo priorizar aqueles com maior retorno potencial para justificar despesas em marketing, publicidade ou qualquer outra área para mostrar o valor gerado por esses investimentos.")
+st.header("Retorno sobre o investimento", help="Avalia a eficiência de um investimento, ajudando empresas a entenderem o retorno que estão obtendo em relação ao que foi investido. Facilita a comparação entre diferentes projetos ou campanhas, permitindo priorizar aqueles com maior retorno potencial para justificar despesas em marketing, publicidade ou qualquer outra área para mostrar o valor gerado por esses investimentos.")
 receita_obtida = st.number_input("Receita Obtida:", min_value=0.0, format="%.2f")
 custo_investimento = st.number_input("Custo Total de Investimento:", min_value=0.0, format="%.2f")
 
@@ -96,6 +106,39 @@ if st.button("Calcular ROI"):
         adicionar_resultado("ROI", roi)
     else:
         st.warning("O custo de investimento deve ser maior que zero.")
+
+st.header("Payback Period", help="Métrica usada para descobrir o tempo necessário que um produto/campanha/serviço demorou para igualar a quantidade investida. Essa métrica é fundamental para que os setores financeiros possam fazer previsões de contas e garantir uma margem segura para um determinado investimento prosperar.")
+investimento_inicial = st.number_input("Investimento Inicial:", min_value=0.0, format="%.2f")
+retorno_anual = st.number_input("Retorno Anual:", min_value=0.0, format="%.2f")
+
+if st.button("Calcular Payback Period"):
+    if retorno_anual > 0:
+        payback_period = calcular_payback_period(investimento_inicial, retorno_anual)
+        adicionar_resultado("Payback Period", payback_period)
+    else:
+        st.warning("O retorno anual deve ser maior que zero.")
+
+st.header("Frequência de Compra", help="Calcula o número de compras que cada cliente realiza. Essa métrica é ideal para saber quais são as probabilidade de um cliente fazer uma compra cross-sell ou up-sell, além de ser essencial para monitorar o período de compra dos clientes.")
+total_compras = st.number_input("Número Total de Compras:", min_value=0.0, format="%.2f")
+clientes = st.number_input("Número de Clientes:", min_value=0.0, format="%.2f")
+
+if st.button("Calcular Frequência de Compra"):
+    if clientes > 0:
+        frequencia_compra = calcular_frequencia_compra(total_compras, clientes)
+        adicionar_resultado("Frequência de Compra", frequencia_compra)
+    else:
+        st.warning("O número de clientes deve ser maior que zero.")
+
+st.header("Ticket Médio", help="O Ticket Médio é um indicador utilizado para calcular o valor médio gasto por cada cliente em suas compras. Esse indicador é importante para entender o comportamento de consumo dos clientes e medir o desempenho das estratégias de vendas de um negócio. Um Ticket Médio alto pode indicar que seus clientes estão gastando mais por transação, o que pode ser um sinal positivo de eficiência de vendas ou qualidade do produto.")
+receita_total = st.number_input("Receita Total:", min_value=0.0, format="%.2f")
+numero_clientes = st.number_input("Número de Clientes:", min_value=0)
+
+if st.button("Calcular Ticket Médio"):
+    if numero_clientes > 0:
+        ticket_medio = calcular_ticket_medio(receita_total, numero_clientes)
+        adicionar_resultado("Ticket Médio", ticket_medio)
+    else:
+        st.warning("O número de clientes deve ser maior que zero.")
 
 # Custo por Lead
 st.header("Custo por Lead", help="O CPL ajuda a medir a eficácia das campanhas de marketing, já que campanhas com um CPL baixo geralmente indicam uma boa performance. Ideal para ajudar a alocar orçamentos de forma eficiente, permitindo que as empresas direcionem recursos para as campanhas mais rentáveis ao testar diferentes canais para identificar quais geram leads a um menor custo")
@@ -226,7 +269,7 @@ if st.button("Calcular Taxa de Crescimento"):
 
 # Exibir resultados atuais
 st.subheader("Resultados Calculados")
-resultados_keys = list(st.session_state.resultados.keys())  # Cópia das chaves
+resultados_keys = list(st.session_state.resultados.keys()) 
 for nome in resultados_keys:
     valor = st.session_state.resultados[nome]
     st.write(f"{nome}: {valor}")
