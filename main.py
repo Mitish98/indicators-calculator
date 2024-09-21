@@ -228,13 +228,21 @@ if st.button("Calculate Growth Rate"):
     else:
         st.warning("The previous value must be greater than zero.")
 
-# Display all results
+
+# Inicializa session_state se não existir
+if 'results' not in st.session_state:
+    st.session_state.results = {}
+
+if 'resultados' not in st.session_state:
+    st.session_state.resultados = {}
+
+# Exibe todos os resultados
 if st.session_state.results:
     st.subheader("Calculated Results")
     for indicator, value in st.session_state.results.items():
         st.write(f"{indicator}: {value:.2f}" if isinstance(value, (int, float)) else f"{indicator}: {value}")
 
-resultados_keys = list(st.session_state.resultados.keys()) 
+resultados_keys = list(st.session_state.resultados.keys())
 for nome in resultados_keys:
     valor = st.session_state.resultados[nome]
     st.write(f"{nome}: {valor}")
