@@ -228,6 +228,17 @@ if st.button("Calculate Growth Rate"):
     else:
         st.warning("The previous value must be greater than zero.")
 
+# Growth Rate
+st.header("Conversions Rate", help="is a percentage that measures the number of users who complete a desired action in relation to the total number of users. It's a key metric used in digital marketing to evaluate the performance of marketing campaigns, website traffic, and conversions.")
+total_value = st.number_input("Total Value:", min_value=0.0, format="%.2f")
+convertions_value = st.number_input("Convertions Value:", min_value=0.0, format="%.2f")
+
+if st.button("Calculate Conversions Rate"):
+    if previous_value > 0:
+        convertions_rate = calculate_conversion_rate(total_value,convertions_value)
+        add_result("Conversions Rate", convertions_rate)
+    else:
+        st.warning("The previous value must be greater than zero.")
 
 # Inicializa session_state se não existir
 if 'results' not in st.session_state:
