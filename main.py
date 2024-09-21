@@ -2,277 +2,242 @@ import streamlit as st
 from collections import Counter
 import pandas as pd
 
-# Inicializa o estado da sessão
-if 'resultados' not in st.session_state:
-    st.session_state.resultados = {}
+# Initialize session state
+if 'results' not in st.session_state:
+    st.session_state.results = {}
 
-# Função para exportar resultados para CSV
-def exportar_resultados():
-    if st.session_state.resultados:
-        df = pd.DataFrame(st.session_state.resultados.items(), columns=['Indicador', 'Valor'])
+# Function to export results to CSV
+def export_results():
+    if st.session_state.results:
+        df = pd.DataFrame(st.session_state.results.items(), columns=['Indicator', 'Value'])
         return df.to_csv(index=False)
     else:
         return None
 
-# Funções para cálculos
+# Calculation functions
 
-def calcular_frequencia_compra(total_compras, clientes):
-    return total_compras / clientes
+def calculate_purchase_frequency(total_purchases, clients):
+    return total_purchases / clients
 
-def calcular_payback_period(investimento_inicial, retorno_anual):
-    return investimento_inicial / retorno_anual
+def calculate_payback_period(initial_investment, annual_return):
+    return initial_investment / annual_return
 
-def calcular_media_aritmetica(valores):
-    return sum(valores) / len(valores)
+def calculate_arithmetic_mean(values):
+    return sum(values) / len(values)
 
-def calcular_media_ponderada(valores, pesos):
-    total_pesos = sum(pesos)
-    return sum(v * p for v, p in zip(valores, pesos)) / total_pesos
+def calculate_weighted_average(values, weights):
+    total_weights = sum(weights)
+    return sum(v * w for v, w in zip(values, weights)) / total_weights
 
-def calcular_mediana(valores):
-    valores_ordenados = sorted(valores)
-    n = len(valores_ordenados)
-    meio = n // 2
+def calculate_median(values):
+    sorted_values = sorted(values)
+    n = len(sorted_values)
+    middle = n // 2
     if n % 2 == 0:
-        return (valores_ordenados[meio - 1] + valores_ordenados[meio]) / 2
+        return (sorted_values[middle - 1] + sorted_values[middle]) / 2
     else:
-        return valores_ordenados[meio]
+        return sorted_values[middle]
 
-def calcular_moda(valores):
-    contagem = Counter(valores)
-    frequencia_maxima = max(contagem.values())
-    modas = [valor for valor, frequencia in contagem.items() if frequencia == frequencia_maxima]
-    return modas
+def calculate_mode(values):
+    count = Counter(values)
+    max_frequency = max(count.values())
+    modes = [val for val, freq in count.items() if freq == max_frequency]
+    return modes
 
-def calcular_taxa_conversao(conversoes, total_visitas):
-    return (conversoes / total_visitas) * 100
+def calculate_conversion_rate(conversions, total_visits):
+    return (conversions / total_visits) * 100
 
-def calcular_taxa_crescimento(valor_atual, valor_anterior):
-    return ((valor_atual - valor_anterior) / valor_anterior) * 100
+def calculate_growth_rate(current_value, previous_value):
+    return ((current_value - previous_value) / previous_value) * 100
 
-def calcular_cpl(custo_marketing, leads_gerados):
-    return custo_marketing / leads_gerados
+def calculate_cpl(marketing_cost, leads_generated):
+    return marketing_cost / leads_generated
 
-def calcular_roi(receita_obtida, custo_investimento):
-    return (receita_obtida - custo_investimento) / custo_investimento * 100
+def calculate_roi(revenue_earned, investment_cost):
+    return (revenue_earned - investment_cost) / investment_cost * 100
 
-def calcular_ltv(receita_media_cliente, tempo_retenção, margem_lucro):
-    return receita_media_cliente * tempo_retenção * margem_lucro
+def calculate_ltv(avg_customer_revenue, retention_time, profit_margin):
+    return avg_customer_revenue * retention_time * profit_margin
 
-def calcular_ctr(cliques, impressoes):
-    return (cliques / impressoes) * 100
+def calculate_ctr(clicks, impressions):
+    return (clicks / impressions) * 100
 
-def calcular_cac(custo_marketing_vendas, novos_clientes):
-    return custo_marketing_vendas / novos_clientes
+def calculate_cac(marketing_sales_cost, new_customers):
+    return marketing_sales_cost / new_customers
 
-def calcular_nps(pontuacao_promotores, pontuacao_detratores):
-    return pontuacao_promotores - pontuacao_detratores
+def calculate_nps(promoter_score, detractor_score):
+    return promoter_score - detractor_score
 
-def calcular_churn(clientes_perdidos, clientes_inicial):
-    return (clientes_perdidos / clientes_inicial) * 100
+def calculate_churn(lost_customers, initial_customers):
+    return (lost_customers / initial_customers) * 100
 
-def calcular_ticket_medio(receita_total, numero_clientes):
-    return receita_total / numero_clientes
+def calculate_average_ticket(total_revenue, number_of_clients):
+    return total_revenue / number_of_clients
 
-# Função para adicionar e exibir resultados
-def adicionar_resultado(nome, valor):
-    if isinstance(valor, list):
-        valor_formatado = ', '.join(map(str, valor))  # Formata a lista como string
+# Function to add and display results
+def add_result(name, value):
+    if isinstance(value, list):
+        formatted_value = ', '.join(map(str, value))  # Format list as string
     else:
-        valor_formatado = f"{valor:.2f}"  # Formata como decimal se não for lista
+        formatted_value = f"{value:.2f}"  # Format as decimal if not a list
     
-    st.session_state.resultados[nome] = valor  # Armazena o resultado no estado da sessão
-    st.write(f"{nome}: {valor_formatado}")
+    st.session_state.results[name] = value  # Store result in session state
+    st.write(f"{name}: {formatted_value}")
 
-# Interface do usuário
-st.title("Calculadora de Indicadores")
-st.write("Página voltada para o cálculo de indicadores para múltiplas funcionalidades de análise de dados.")
+# User interface
+st.title("Indicators Calculator")
+st.write("Page dedicated to calculating indicators for multiple data analysis functionalities.")
 
-# Botão para exportar resultados
-csv_resultados = exportar_resultados()
-if csv_resultados:
-    st.download_button("Baixar Resultados como CSV", csv_resultados, "resultados.csv", "text/csv")
+# Button to export results
+csv_results = export_results()
+if csv_results:
+    st.download_button("Download CSV File", csv_results, "results.csv", "text/csv")
 else:
-    st.warning("Nenhum resultado para exportar.")
+    st.warning("No results to export.")
 
 # Return on Investment
-st.header("Retorno sobre o investimento", help="Avalia a eficiência de um investimento, ajudando empresas a entenderem o retorno que estão obtendo em relação ao que foi investido. Facilita a comparação entre diferentes projetos ou campanhas, permitindo priorizar aqueles com maior retorno potencial para justificar despesas em marketing, publicidade ou qualquer outra área para mostrar o valor gerado por esses investimentos.")
-receita_obtida = st.number_input("Receita Obtida:", min_value=0.0, format="%.2f")
-custo_investimento = st.number_input("Custo Total de Investimento:", min_value=0.0, format="%.2f")
+st.header("Return on Investment", help="Measures investment efficiency, allowing companies to compare projects/campaigns and prioritize those with higher potential returns, justifying marketing and advertising expenses.")
+revenue_earned = st.number_input("Revenue Earned:", min_value=0.0, format="%.2f")
+investment_cost = st.number_input("Total Cost of Investment:", min_value=0.0, format="%.2f")
 
-if st.button("Calcular ROI"):
-    if custo_investimento > 0:
-        roi = calcular_roi(receita_obtida, custo_investimento)
-        adicionar_resultado("ROI", roi)
+if st.button("Calculate ROI"):
+    if investment_cost > 0:
+        roi = calculate_roi(revenue_earned, investment_cost)
+        add_result("ROI", roi)
     else:
-        st.warning("O custo de investimento deve ser maior que zero.")
+        st.warning("The investment cost must be greater than zero.")
 
-st.header("Payback Period", help="Métrica usada para descobrir o tempo necessário que um produto/campanha/serviço demorou para igualar a quantidade investida. Essa métrica é fundamental para que os setores financeiros possam fazer previsões de contas e garantir uma margem segura para um determinado investimento prosperar.")
-investimento_inicial = st.number_input("Investimento Inicial:", min_value=0.0, format="%.2f")
-retorno_anual = st.number_input("Retorno Anual:", min_value=0.0, format="%.2f")
+# Payback Period
+st.header("Payback Period", help="Metric used to find the time it takes for a product/campaign/service to recoup the invested amount. This is crucial for financial sectors to make projections and ensure a safe margin for a particular investment to thrive.")
+initial_investment = st.number_input("Initial Investment:", min_value=0.0, format="%.2f")
+annual_return = st.number_input("Annual Return:", min_value=0.0, format="%.2f")
 
-if st.button("Calcular Payback Period"):
-    if retorno_anual > 0:
-        payback_period = calcular_payback_period(investimento_inicial, retorno_anual)
-        adicionar_resultado("Payback Period", payback_period)
+if st.button("Calculate Payback Period"):
+    if annual_return > 0:
+        payback_period = calculate_payback_period(initial_investment, annual_return)
+        add_result("Payback Period", payback_period)
     else:
-        st.warning("O retorno anual deve ser maior que zero.")
+        st.warning("The annual return must be greater than zero.")
 
-st.header("Frequência de Compra", help="Calcula o número de compras que cada cliente realiza. Essa métrica é ideal para saber quais são as probabilidade de um cliente fazer uma compra cross-sell ou up-sell, além de ser essencial para monitorar o período de compra dos clientes.")
-total_compras = st.number_input("Número Total de Compras:", min_value=0.0, format="%.2f")
-clientes = st.number_input("Número de Clientes:", min_value=0.0, format="%.2f")
+# Purchase Frequency
+st.header("Purchase Frequency", help="Calculates the number of purchases each customer makes. This metric is ideal for tracking the likelihood of a customer making a cross-sell or up-sell, and essential for monitoring purchase periods.")
+total_purchases = st.number_input("Total Number of Purchases:", min_value=0.0, format="%.2f")
+clients = st.number_input("Number of Clients:", min_value=0.0, format="%.2f")
 
-if st.button("Calcular Frequência de Compra"):
-    if clientes > 0:
-        frequencia_compra = calcular_frequencia_compra(total_compras, clientes)
-        adicionar_resultado("Frequência de Compra", frequencia_compra)
+if st.button("Calculate Purchase Frequency"):
+    if clients > 0:
+        purchase_frequency = calculate_purchase_frequency(total_purchases, clients)
+        add_result("Purchase Frequency", purchase_frequency)
     else:
-        st.warning("O número de clientes deve ser maior que zero.")
+        st.warning("The number of clients must be greater than zero.")
 
-st.header("Ticket Médio", help="O Ticket Médio é um indicador utilizado para calcular o valor médio gasto por cada cliente em suas compras. Esse indicador é importante para entender o comportamento de consumo dos clientes e medir o desempenho das estratégias de vendas de um negócio. Um Ticket Médio alto pode indicar que seus clientes estão gastando mais por transação, o que pode ser um sinal positivo de eficiência de vendas ou qualidade do produto.")
-receita_total = st.number_input("Receita Total:", min_value=0.0, format="%.2f")
-numero_clientes = st.number_input("Número de Clientes:", min_value=0)
+# Average Ticket
+st.header("Average Ticket", help="The Average Ticket indicator calculates the average amount spent by each customer in their purchases. This indicator is important to understand customer behavior and measure the effectiveness of sales strategies.")
+total_revenue = st.number_input("Total Revenue:", min_value=0.0, format="%.2f")
+number_of_clients = st.number_input("Number of Clients:", min_value=0)
 
-if st.button("Calcular Ticket Médio"):
-    if numero_clientes > 0:
-        ticket_medio = calcular_ticket_medio(receita_total, numero_clientes)
-        adicionar_resultado("Ticket Médio", ticket_medio)
+if st.button("Calculate Average Ticket"):
+    if number_of_clients > 0:
+        average_ticket = calculate_average_ticket(total_revenue, number_of_clients)
+        add_result("Average Ticket", average_ticket)
     else:
-        st.warning("O número de clientes deve ser maior que zero.")
+        st.warning("The number of clients must be greater than zero.")
 
-# Custo por Lead
-st.header("Custo por Lead", help="O CPL ajuda a medir a eficácia das campanhas de marketing, já que campanhas com um CPL baixo geralmente indicam uma boa performance. Ideal para ajudar a alocar orçamentos de forma eficiente, permitindo que as empresas direcionem recursos para as campanhas mais rentáveis ao testar diferentes canais para identificar quais geram leads a um menor custo")
-custo_marketing = st.number_input("Custo Total de Marketing:", min_value=0.0, format="%.2f")
-leads_gerados = st.number_input("Número de Leads Gerados:", min_value=0.0, format="%.2f")
+# Cost Per Lead
+st.header("Cost Per Lead", help="CPL helps measure the effectiveness of marketing campaigns, as campaigns with a low CPL generally indicate good performance. Ideal for allocating budgets efficiently, allowing companies to direct resources to the most profitable campaigns.")
+marketing_cost = st.number_input("Total Marketing Cost:", min_value=0.0, format="%.2f")
+leads_generated = st.number_input("Number of Leads Generated:", min_value=0.0, format="%.2f")
 
-if st.button("Calcular CPL"):
-    if leads_gerados > 0:
-        cpl = calcular_cpl(custo_marketing, leads_gerados)
-        adicionar_resultado("CPL", cpl)
+if st.button("Calculate CPL"):
+    if leads_generated > 0:
+        cpl = calculate_cpl(marketing_cost, leads_generated)
+        add_result("CPL", cpl)
     else:
-        st.warning("O número de leads gerados deve ser maior que zero.")
+        st.warning("The number of leads generated must be greater than zero.")
 
-# Custo de Aquisição de Clientes
-st.header("Custo de Aquisição de Clientes", help="Representa o custo total envolvido na aquisição de um novo cliente. Analisar o CAC pode revelar áreas onde os custos de aquisição são excessivos, permitindo ajustes nas táticas de marketing e vendas.  ")
-custo_marketing_vendas = st.number_input("Custo Total de Marketing e Vendas:", min_value=0.0, format="%.2f")
-novos_clientes = st.number_input("Número de Novos Clientes Adquiridos:", min_value=0.0, format="%.2f")
+# Customer Acquisition Cost
+st.header("Customer Acquisition Cost", help="Represents the total cost involved in acquiring a new customer. Analyzing CAC can reveal areas where acquisition costs are excessive, allowing adjustments in marketing and sales tactics.")
+marketing_sales_cost = st.number_input("Total Marketing and Sales Cost:", min_value=0.0, format="%.2f")
+new_customers = st.number_input("Number of New Customers Acquired:", min_value=0.0, format="%.2f")
 
-if st.button("Calcular CAC"):
-    if novos_clientes > 0:
-        cac = calcular_cac(custo_marketing_vendas, novos_clientes)
-        adicionar_resultado("CAC", cac)
+if st.button("Calculate CAC"):
+    if new_customers > 0:
+        cac = calculate_cac(marketing_sales_cost, new_customers)
+        add_result("CAC", cac)
     else:
-        st.warning("O número de novos clientes deve ser maior que zero.")
+        st.warning("The number of new customers must be greater than zero.")
 
 # Life Time Value
-st.header("Life Time Value", help="Estima o valor total que um cliente pode gerar para uma empresa durante toda a sua relação com a marca, permitindo que as empresas invistam de forma mais eficaz em campanhas de marketing para saber quanto estão dispostas a gastar para adquirir um cliente. O LTV deve ser comparado ao Custo de Aquisição de Clientes (CAC). Um LTV significativamente maior que o CAC indica uma estratégia de aquisição saudável.")
-receita_media_cliente = st.number_input("Receita Média por Cliente:", min_value=0.0, format="%.2f")
-tempo_retenção = st.number_input("Tempo Médio de Retenção do Cliente:", min_value=0.0, format="%.2f")
-margem_lucro = st.number_input("Margem de Lucro:", min_value=0.0, format="%.2f")
+st.header("Life Time Value", help="Estimates the total value a customer can generate for a company throughout their relationship with the brand, allowing companies to invest more effectively in marketing campaigns to know how much they are willing to spend to acquire a customer. LTV should be compared to the Customer Acquisition Cost (CAC). A significantly higher LTV than CAC indicates a healthy acquisition strategy.")
+avg_customer_revenue = st.number_input("Average Revenue per Customer:", min_value=0.0, format="%.2f")
+retention_time = st.number_input("Average Customer Retention Time:", min_value=0.0, format="%.2f")
+profit_margin = st.number_input("Profit Margin:", min_value=0.0, format="%.2f")
 
-if st.button("Calcular LTV"):
-    if tempo_retenção > 0:
-        ltv = calcular_ltv(receita_media_cliente, tempo_retenção, margem_lucro)
-        adicionar_resultado("LTV", ltv)
+if st.button("Calculate LTV"):
+    if retention_time > 0:
+        ltv = calculate_ltv(avg_customer_revenue, retention_time, profit_margin)
+        add_result("LTV", ltv)
     else:
-        st.warning("O tempo médio de retenção deve ser maior que zero.")
+        st.warning("The average retention time must be greater than zero.")
 
 # Click Through Rate
 st.header("Click Through Rate")
-cliques = st.number_input("Número de Cliques:", min_value=0.0, format="%.2f")
-impressoes = st.number_input("Número de Impressões:", min_value=0.0, format="%.2f")
+clicks = st.number_input("Number of Clicks:", min_value=0.0, format="%.2f")
+impressions = st.number_input("Number of Impressions:", min_value=0.0, format="%.2f")
 
-if st.button("Calcular CTR"):
-    if impressoes > 0:
-        ctr = calcular_ctr(cliques, impressoes)
-        adicionar_resultado("CTR", ctr)
+if st.button("Calculate CTR"):
+    if impressions > 0:
+        ctr = calculate_ctr(clicks, impressions)
+        add_result("CTR", ctr)
     else:
-        st.warning("O número de impressões deve ser maior que zero.")
+        st.warning("The number of impressions must be greater than zero.")
 
 # Net Promoter Score
-st.header("Net Promoter Score", help="Métrica que mede a lealdade dos clientes e a probabilidade de eles recomendarem uma empresa, produto ou serviço a outros. O NPS é obtido a partir de uma única pergunta enviada aos clientes 'Em uma escala de 0 a 10, qual a probabilidade de você recomendar nossa empresa a um amigo ou colega?' Com base nas respostas, os clientes são classificados em três categorias: Promotores (nota 9-10): Clientes fiéis que recomendam a empresa. / Neutros (nota 7-8): Clientes satisfeitos, mas não necessariamente leais. / Detratores (nota 0-6): Clientes insatisfeitos que podem prejudicar a reputação da empresa. Além da pontuação numérica, coletar feedback qualitativo pode oferecer contexto e profundidade às respostas, ajudando a entender as razões por trás das classificações.")
-pontuacao_promotores = st.number_input("Pontuação de Promotores:", min_value=0.0, format="%.2f")
-pontuacao_detratores = st.number_input("Pontuação de Detratores:", min_value=0.0, format="%.2f")
+st.header("Net Promoter Score", help="A metric that measures customer loyalty and their likelihood to recommend a company, product, or service to others.")
+promoter_score = st.number_input("Promoter Score:", min_value=0.0, format="%.2f")
+detractor_score = st.number_input("Detractor Score:", min_value=0.0, format="%.2f")
 
-if st.button("Calcular NPS"):
-    nps = calcular_nps(pontuacao_promotores, pontuacao_detratores)
-    adicionar_resultado("NPS", nps)
-
-# Churn
-st.header("Churn", help="Métrica que indica a porcentagem de clientes que interrompem o uso de um serviço ou produto em um determinado período. Ao entender as causas do churn, as empresas podem desenvolver estratégias específicas para melhorar a retenção e minimizar a perda de clientes.")
-clientes_perdidos = st.number_input("Número de Clientes Perdidos:", min_value=0.0, format="%.2f")
-clientes_inicial = st.number_input("Número Total de Clientes no Início do Período:", min_value=0.0, format="%.2f")
-
-if st.button("Calcular Churn"):
-    if clientes_inicial > 0:
-        churn = calcular_churn(clientes_perdidos, clientes_inicial)
-        adicionar_resultado("Churn", churn)
+if st.button("Calculate NPS"):
+    if promoter_score >= 0 and detractor_score >= 0:
+        nps = calculate_nps(promoter_score, detractor_score)
+        add_result("NPS", nps)
     else:
-        st.warning("O número total de clientes no início do período deve ser maior que zero.")
+        st.warning("The promoter and detractor scores must be non-negative.")
 
-# Média Aritmética
-st.header("Média Aritmética", help="Medida central comum usada para entender a tendência de dados, valores extremos podem distorcer a média, o que exige cuidado ao interpretar.")
-valores_aritmetica = st.text_input("Insira os valores separados por vírgula:", "1,2,3,4,5", key="media_aritmetica")
-if st.button("Calcular Média Aritmética"):
-    valores = list(map(float, valores_aritmetica.split(',')))
-    media_aritmetica = calcular_media_aritmetica(valores)
-    adicionar_resultado("Média Aritmética", media_aritmetica)
+# Churn Rate
+st.header("Churn Rate", help="Measures the percentage of customers that stop using your product during a certain timeframe. It’s essential for assessing the retention of customers.")
+lost_customers = st.number_input("Number of Lost Customers:", min_value=0)
+initial_customers = st.number_input("Initial Number of Customers:", min_value=0)
 
-# Média Ponderada
-st.header("Média Ponderada", help="A média ponderada leva em consideração a importância de cada valor no conjunto, atribuindo pesos a eles. A média ponderada oferece uma visão mais precisa quando diferentes valores têm diferentes importâncias.")
-valores_ponderada = st.text_input("Insira os valores separados por vírgula:", "1,2,3", key="media_ponderada")
-pesos_ponderada = st.text_input("Insira os pesos separados por vírgula:", "0.1,0.2,0.7", key="pesos_ponderada")
-if st.button("Calcular Média Ponderada"):
-    valores = list(map(float, valores_ponderada.split(',')))
-    pesos = list(map(float, pesos_ponderada.split(',')))
-    media_ponderada = calcular_media_ponderada(valores, pesos)
-    adicionar_resultado("Média Ponderada", media_ponderada)
-
-# Mediana
-st.header("Mediana", help="A mediana é o valor central de um conjunto de dados ordenados. Se houver um número ímpar de valores, a mediana é o valor central; se houver um número par, é a média dos dois valores centrais. A mediana é menos afetada por valores extremos, oferecendo uma medida mais robusta em distribuições assimétricas, ideal para descrever distribuições enviesadas.")
-valores_mediana = st.text_input("Insira os valores separados por vírgula:", "1,2,3,4,5", key="mediana")
-if st.button("Calcular Mediana"):
-    valores = list(map(float, valores_mediana.split(',')))
-    mediana = calcular_mediana(valores)
-    adicionar_resultado("Mediana", mediana)
-
-# Moda
-st.header("Moda", help="A moda é o valor que mais aparece em um conjunto de dados. Ao contrário da média e da mediana, a moda não leva em conta o valor exato, mas sim a frequência. Utilizada para entender qual é a escolha mais comum, como o produto mais vendido. Um conjunto de dados pode ter mais de uma moda (bimodal ou multimodal).")
-valores_moda = st.text_input("Insira os valores separados por vírgula:", "1,2,2,3,4", key="moda")
-if st.button("Calcular Moda"):
-    valores = list(map(float, valores_moda.split(',')))
-    modas = calcular_moda(valores)
-    adicionar_resultado("Moda", modas)
-
-st.header("Taxa de Conversão" , help="Mede o percentual de pessoas que realizaram uma ação desejada (como uma compra) em relação ao número total de pessoas que interagiram com uma campanha ou site.")
-conversoes = st.number_input("Número de Conversões:", min_value=0.0, format="%.2f", key="conversoes")
-total_visitas = st.number_input("Número Total de Visitas:", min_value=0.0, format="%.2f", key="total_visitas")
-
-if st.button("Calcular Taxa de Conversão"):
-    if total_visitas > 0:
-        taxa_conversao = calcular_taxa_conversao(conversoes, total_visitas)
-        adicionar_resultado("Taxa de Conversão", taxa_conversao)
+if st.button("Calculate Churn Rate"):
+    if initial_customers > 0:
+        churn_rate = calculate_churn(lost_customers, initial_customers)
+        add_result("Churn Rate", churn_rate)
     else:
-        st.warning("O número total de visitas deve ser maior que zero.")
+        st.warning("The initial number of customers must be greater than zero.")
 
-# Taxa de Crescimento
-st.header("Taxa de Crescimento", help="A taxa de crescimento mede o aumento percentual de uma variável (como receita, número de clientes, etc.) em relação a um período anterior.")
-valor_atual = st.number_input("Valor Atual:", min_value=0.0, format="%.2f", key="valor_atual")
-valor_anterior = st.number_input("Valor Anterior:", min_value=0.0, format="%.2f", key="valor_anterior")
+# Growth Rate
+st.header("Growth Rate", help="The Growth Rate is a measure of the increase in size or value of a business over time. Understanding growth is crucial for long-term planning.")
+current_value = st.number_input("Current Value:", min_value=0.0, format="%.2f")
+previous_value = st.number_input("Previous Value:", min_value=0.0, format="%.2f")
 
-if st.button("Calcular Taxa de Crescimento"):
-    if valor_anterior > 0:
-        taxa_crescimento = calcular_taxa_crescimento(valor_atual, valor_anterior)
-        adicionar_resultado("Taxa de Crescimento", taxa_crescimento)
+if st.button("Calculate Growth Rate"):
+    if previous_value > 0:
+        growth_rate = calculate_growth_rate(current_value, previous_value)
+        add_result("Growth Rate", growth_rate)
     else:
-        st.warning("O valor anterior deve ser maior que zero.")
+        st.warning("The previous value must be greater than zero.")
 
+# Display all results
+if st.session_state.results:
+    st.subheader("Calculated Results")
+    for indicator, value in st.session_state.results.items():
+        st.write(f"{indicator}: {value:.2f}" if isinstance(value, (int, float)) else f"{indicator}: {value}")
 
-st.subheader("Resultados Calculados")
 resultados_keys = list(st.session_state.resultados.keys()) 
 for nome in resultados_keys:
     valor = st.session_state.resultados[nome]
     st.write(f"{nome}: {valor}")
-    if st.button(f"Excluir {nome}"):
+    if st.button(f"Exclude {nome}"):
         del st.session_state.resultados[nome]
-        st.success(f"{nome} excluído com sucesso!")
+        st.success(f"{nome} successfully deleted!")
